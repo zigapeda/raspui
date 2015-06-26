@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+
+tft.c
+tft.h
+RAIO8870.c
+RAIO8870.h
