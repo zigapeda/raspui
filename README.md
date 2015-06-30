@@ -18,7 +18,7 @@ Additionally there are some features:
  * Backlight brightness is adjustable
 
 Planned features are:
- * Controll the GPIO pins on the display adapter board with the library
+ * Control the GPIO pins on the display adapter board with the library
  * Spinner to adjust values precisely
 
 For building the framework you need:
