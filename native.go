@@ -140,13 +140,22 @@ func setBacklightPwmValue(brightness int) {
 }
 
 func SetGpioOutput(pin int) {
-	fmt.Println("set pin", pin, "to output")
+	C.bcm2835_gpio_fsel(C.uint8_t(pin), C.BCM2835_GPIO_FSEL_OUTP)
 }
 
-func SetGpioInput(pin, mode int) {
-	fmt.Println("set pin", pin, "to input")
+func SetGpioInput(pin int) {
+	C.bcm2835_gpio_fsel(C.uint8_t(pin), C.BCM2835_GPIO_FSEL_INPT)
 }
 
 func SetGpio(pin, level int) {
-	fmt.Println("set pin", pin, "to", level)
+	if level == 0 {
+		C.bcm2835_gpio_clr(C.uint8_t(pin))
+	} else if level == 1 {
+		C.bcm2835_gpio_set(C.uint8_t(pin))
+	}
+}
+
+
+func GetGpio(pin int) int {
+	return int(C.bcm2835_gpio_lev(C.uint8_t(pin)))
 }
