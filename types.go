@@ -5,12 +5,14 @@ type rect struct {
 	y      int
 	width  int
 	height int
+	draw   bool
 }
 
 type drawable interface {
-	draw()
+	doDraw()
 	getRect() rect
 	setRect(rect)
+	setDrawable(bool)
 }
 
 type touchable interface {

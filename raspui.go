@@ -90,17 +90,27 @@ func SetDisplayBacklight(brightness int) {
 
 func AddElement(elmnt drawable) {
 	elements = append(elements, elmnt)
-	invokeLater(elmnt.draw)
+	invokeLater(elmnt.doDraw)
 }
 
 func RemoveElement(elmnt drawable) {
 	for i, v := range elements {
 		if elmnt == v {
 			r := elmnt.getRect()
+			elmnt.setDrawable(false)
 			invokeLater(func() { drawFilledBox(r.x, r.y, r.x+r.width, r.y+r.height, WHITE) }) //remove from ui
 			elements = append(elements[:i], elements[i+1:]...)
+			return
 		}
 	}
+}
+
+func Clear() {
+	for _, v := range elements {
+		v.setDrawable(false)
+	}
+	invokeLater(func() { drawFilledBox(0, 0, 320, 240, WHITE) })
+	elements = elements[:0]
 }
 
 func convertToPixel(p *image.Point) (x, y int) {
@@ -220,7 +230,7 @@ func uiLoop() {
 		case i := <-invalidChan:
 			for _, v := range elements {
 				if i == v {
-					i.draw()
+					i.doDraw()
 					break
 				}
 			}

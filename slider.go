@@ -19,6 +19,7 @@ func CreateSlider(x, y, width, height, minvalue, maxvalue int) *Slider {
 	sld.y = y
 	sld.width = width
 	sld.height = height
+	sld.draw = true
 	sld.minx = x + height/2
 	sld.maxx = x + width - height/2
 	sld.pos = x + height/2
@@ -33,15 +34,17 @@ func CreateSlider(x, y, width, height, minvalue, maxvalue int) *Slider {
 	//sld ist bla
 }
 
-func (s *Slider) draw() {
-	ly := s.y + (s.height / 2)
-	drawFilledBox(s.x, s.y, s.x+s.width, s.y+s.height, WHITE)
-	drawLine(s.minx, ly, s.maxx, ly, GRAY)
-	drawCircle(s.pos, ly, s.height/2, DARKBLUE)
-	if s.pressed == true {
-		drawFilledCircle(s.pos, ly, s.height/2-1, LIGHTBLUE)
-	} else {
-		drawFilledCircle(s.pos, ly, s.height/2-1, BLUE)
+func (s *Slider) doDraw() {
+	if s.draw == true {
+		ly := s.y + (s.height / 2)
+		drawFilledBox(s.x, s.y, s.x+s.width, s.y+s.height, WHITE)
+		drawLine(s.minx, ly, s.maxx, ly, GRAY)
+		drawCircle(s.pos, ly, s.height/2, DARKBLUE)
+		if s.pressed == true {
+			drawFilledCircle(s.pos, ly, s.height/2-1, LIGHTBLUE)
+		} else {
+			drawFilledCircle(s.pos, ly, s.height/2-1, BLUE)
+		}
 	}
 }
 
@@ -53,6 +56,10 @@ func (s *Slider) setRect(r rect) {
 	s.rect = r
 }
 
+func (s *Slider) setDrawable(draw bool) {
+	s.draw = draw
+}
+
 func (s *Slider) istouchable(x, y int) bool {
 	return s.x <= x && s.y <= y && s.x+s.width >= x && s.y+s.height >= y
 }
@@ -60,7 +67,7 @@ func (s *Slider) istouchable(x, y int) bool {
 func (s *Slider) touch(x, y int) bool {
 	if s.pressed == false {
 		s.pressed = true
-		invokeLater(s.draw)
+		invokeLater(s.doDraw)
 	}
 	if x < s.minx {
 		s.pos = s.minx
@@ -73,7 +80,7 @@ func (s *Slider) touch(x, y int) bool {
 		if s.change != nil {
 			s.change(s.GetValue())
 		}
-		invokeLater(s.draw)
+		invokeLater(s.doDraw)
 		s.lastpos = s.pos
 	}
 	return true
@@ -85,7 +92,7 @@ func (s *Slider) stoptouch() {
 	if s.release != nil {
 		s.release(s.GetValue())
 	}
-	invokeLater(s.draw)
+	invokeLater(s.doDraw)
 }
 
 func (s *Slider) SetChangeFunc(change func(int)) {

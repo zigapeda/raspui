@@ -39,7 +39,7 @@ func (tp *Tabpane) RemoveTab(tab *Tab) {
 	}
 }
 
-func (tp *Tabpane) draw() {
+func (tp *Tabpane) doDraw() {
 	if tp.currentindex == -1 && len(tp.tabs) > 0 {
 		tp.currentindex = 0
 		tp.tabs[0].show()
@@ -68,10 +68,15 @@ func (tp *Tabpane) draw() {
 }
 
 func (tp *Tabpane) getRect() rect {
-	return rect{0, 0, 320, 40}
+	return rect{0, 0, 320, 40, true}
 }
 
 func (tp *Tabpane) setRect(r rect) {
+	//always full size
+}
+
+func (tp *Tabpane) setDrawable(draw bool) {
+	//always drawable
 }
 
 func (tp *Tabpane) invalidateTab(t *Tab) {
