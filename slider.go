@@ -5,8 +5,8 @@ type Slider struct {
 	pressed bool
 	minx    int
 	maxx    int
-	pos     int
-	lastpos int
+	pos     float64
+	lastpos float64
 	offset  int
 	step    float64
 	change  func(int)
@@ -22,7 +22,7 @@ func CreateSlider(x, y, width, height, minvalue, maxvalue int) *Slider {
 	sld.draw = true
 	sld.minx = x + height/2
 	sld.maxx = x + width - height/2
-	sld.pos = x + height/2
+	sld.pos = float64(x + height/2)
 	sld.lastpos = sld.pos
 	difv := maxvalue - minvalue
 	difx := sld.maxx - sld.minx
@@ -39,11 +39,11 @@ func (s *Slider) doDraw() {
 		ly := s.y + (s.height / 2)
 		drawFilledBox(s.x, s.y, s.x+s.width, s.y+s.height, WHITE)
 		drawLine(s.minx, ly, s.maxx, ly, GRAY)
-		drawCircle(s.pos, ly, s.height/2, DARKBLUE)
+		drawCircle(int(s.pos), ly, s.height/2, DARKBLUE)
 		if s.pressed == true {
-			drawFilledCircle(s.pos, ly, s.height/2-1, LIGHTBLUE)
+			drawFilledCircle(int(s.pos), ly, s.height/2-1, LIGHTBLUE)
 		} else {
-			drawFilledCircle(s.pos, ly, s.height/2-1, BLUE)
+			drawFilledCircle(int(s.pos), ly, s.height/2-1, BLUE)
 		}
 	}
 }
@@ -70,11 +70,11 @@ func (s *Slider) touch(x, y int) bool {
 		invokeLater(s.doDraw)
 	}
 	if x < s.minx {
-		s.pos = s.minx
+		s.pos = float64(s.minx)
 	} else if x > s.maxx {
-		s.pos = s.maxx
+		s.pos = float64(s.maxx)
 	} else {
-		s.pos = x
+		s.pos = float64(x)
 	}
 	if s.lastpos+3 < s.pos || s.lastpos-3 > s.pos {
 		if s.change != nil {
@@ -104,11 +104,11 @@ func (s *Slider) SetReleaseFunc(release func(int)) {
 }
 
 func (s *Slider) SetValue(value int) {
-	s.pos = int(float64(value-s.offset)/s.step) + s.minx
+	s.pos = float64(value-s.offset)/s.step + float64(s.minx)
 	s.lastpos = s.pos
 	declareInvalid(s)
 }
 
 func (s *Slider) GetValue() int {
-	return int(float64(s.pos-s.minx)*s.step) + s.offset
+	return int((s.pos - float64(s.minx)) * s.step) + s.offset
 }
